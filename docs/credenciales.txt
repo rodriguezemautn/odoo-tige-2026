@@ -1,0 +1,74 @@
+================================================================================
+  CREDENCIALES WORKSHOP ODOO — TIGE 2026
+  Facultad Regional La Plata — UTN
+================================================================================
+
+  URL:        http://192.168.0.26
+  Password:   TechFarma2026!
+
+
+  Grupo 1 — Ventas & CRM
+  Rol: Ventas
+  ----------------------------------------------------------------------
+    g1_camila                 CAMILA BACCARINI                         cambaccarini01@gmail.com
+    g1_tomas                  TOMAS BATTISTELLA                        tbattistella@alu.frlp.utn.edu.ar
+    g1_daniela                DANIELA BELLINGERI                       andromeda0209@gmail.com
+    g1_alesandro              ALESANDRO BORDA                          patricio.borda@outlook.com
+    g1_isabella               ISABELLA BRESCIANI                       brescianisa@gmail.com
+    g1_pedro                  PEDRO BUIATTI                            buiattip58@gmail.com
+    g1_valentina              VALENTINA CAPRA                          valentinacapra@alu.frlp.utn.edu.ar
+    g1_rodrigo                RODRIGO CAPRE                            rjcapre@alu.frlp.utn.edu.ar
+
+  Grupo 2 — Supply Chain
+  Rol: Compras / Inventario
+  ----------------------------------------------------------------------
+    g2_joaquin                JOAQUIN CAPUTO                           joaquincaputo84@gmail.com
+    g2_carolina               CAROLINA CARDOSO                         carolinamicaelacardoso@alu.frlp.utn.edu.ar
+    g2_braian                 BRAIAN CASTRO GONZALES                   bcastrogonzales@alu.frlp.utn.edu.ar
+    g2_augusto                AUGUSTO CHECA                            augustocheca@alu.frlp.utn.edu.ar
+    g2_tomas                  TOMAS COCH                               tomascoch@hotmail.com
+    g2_valentina              VALENTINA DÍAZ                           valendiaz01@yahoo.com
+    g2_benjamin               BENJAMIN ELIZALDE                        belizalde@alu.frlp.utn.edu.ar
+    g2_martin                 MARTIN ESPAMER                           martinespamer@alu.frlp.utn.edu.ar
+
+  Grupo 3 — Manufactura
+  Rol: Manufactura
+  ----------------------------------------------------------------------
+    g3_agustin                AGUSTIN FERRARI                          aferrari@alu.frlp.utn.edu.ar
+    g3_gaston                 GASTON FERRARIS DAVIES                   gferrarisdavies@alu.frlp.utn.edu.ar
+    g3_stefania               STEFANIA FRANCINI                        stefaniafrancini@alu.frlp.utn.edu.ar
+    g3_luciano                LUCIANO GARCIA MONTES                    lugarciamontes@gmail.com
+    g3_mora                   MORA GENTIL                              moragentil@alu.frlp.utn.edu.ar
+    g3_sofia                  SOFIA GOSZKO                             slgoszko@alu.frlp.utn.edu.ar
+    g3_agustin_g              AGUSTIN GUTIERREZ MORA                   agustingutierrezmora@alu.frlp.utn.edu.ar
+    g3_irineo                 IRINEO HIRIART                           irineohiriart@alu.frlp.utn.edu.ar
+
+  Grupo 4 — Contabilidad
+  Rol: Contabilidad
+  ----------------------------------------------------------------------
+    g4_sofia                  SOFIA KALPIN                             sofikalpin@hotmail.com
+    g4_valentino              VALENTINO LAURE                          vlaure@alu.frlp.utn.edu.ar
+    g4_emanuel                EMANUEL LEIVA                            eleiva@alu.frlp.utn.edu.ar
+    g4_carina                 CARINA LOPEZ                             carinablopez@gmail.com
+    g4_joaquin                JOAQUIN LUBERTO                          joaquinluberto@alu.frlp.utn.edu.ar
+    g4_baltazar               BALTAZAR MOLTENI                         baltazarmolteni@alu.frlp.utn.edu.ar
+    g4_vicente                VICENTE MOSCUZZA                         vmoscuzza@alu.frlp.utn.edu.ar
+    g4_gonzalo                GONZALO PEREZ                            gnzaaspla@hotmail.com
+    g4_franco                 FRANCO PETOSA AYALA                      franco.petosa15@gmail.com
+
+  Grupo 5 — RRHH & TI
+  Rol: RRHH / Proyectos
+  ----------------------------------------------------------------------
+    g5_sofia                  SOFIA RAGGI                              sraggi@alu.frlp.utn.edu.ar
+    g5_matias                 MATIAS RAU BEKERMAN                      mraubekerman@alu.frlp.utn.edu.ar
+    g5_manuel                 MANUEL REBOL                             manuelrebol@alu.frlp.utn.edu.ar
+    g5_manuel_s               MANUEL SCIANCA                           mscianca@alu.frlp.utn.edu.ar
+    g5_facundo                FACUNDO SERRA                            facuterremoto04@gmail.com
+    g5_nicolas                NICOLAS VALDES                           nicolasezequielvaldes@alu.frlp.utn.edu.ar
+    g5_ivan                   IVAN VIJANDI                             ivanandresvijandi@alu.frlp.utn.edu.ar
+    g5_luciana                LUCIANA GANCIA                           lugancia@gmail.com
+    g5_jaqueline              JAQUELINE MONZON VALERIANO               jaquemonzon31@gmail.com
+
+================================================================================
+  Password para TODOS los usuarios: TechFarma2026!
+================================================================================

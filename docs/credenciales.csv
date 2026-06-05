@@ -1,0 +1,43 @@
+Grupo;Login;Nombre;Email;Password;Rol
+1;g1_camila;BACCARINI - CAMILA;cambaccarini01@gmail.com;TechFarma2026!;Ventas
+1;g1_tomas;BATTISTELLA - TOMAS;tbattistella@alu.frlp.utn.edu.ar;TechFarma2026!;Ventas
+1;g1_daniela;BELLINGERI - DANIELA SOL;andromeda0209@gmail.com;TechFarma2026!;Ventas
+1;g1_alesandro;BORDA - ALESANDRO PATRICIO;patricio.borda@outlook.com;TechFarma2026!;Ventas
+1;g1_isabella;BRESCIANI - ISABELLA;brescianisa@gmail.com;TechFarma2026!;Ventas
+1;g1_pedro;BUIATTI - PEDRO NAZARENO;buiattip58@gmail.com;TechFarma2026!;Ventas
+1;g1_valentina;CAPRA - VALENTINA;valentinacapra@alu.frlp.utn.edu.ar;TechFarma2026!;Ventas
+1;g1_rodrigo;CAPRE - RODRIGO JOAQUIN;rjcapre@alu.frlp.utn.edu.ar;TechFarma2026!;Ventas
+2;g2_joaquin;CAPUTO - JOAQUIN;joaquincaputo84@gmail.com;TechFarma2026!;Compras / Inventario
+2;g2_carolina;CARDOSO - CAROLINA MICAELA;carolinamicaelacardoso@alu.frlp.utn.edu.ar;TechFarma2026!;Compras / Inventario
+2;g2_braian;CASTRO GONZALES - BRAIAN GERMAN;bcastrogonzales@alu.frlp.utn.edu.ar;TechFarma2026!;Compras / Inventario
+2;g2_augusto;CHECA - AUGUSTO;augustocheca@alu.frlp.utn.edu.ar;TechFarma2026!;Compras / Inventario
+2;g2_tomas;COCH - TOMAS AXEL;tomascoch@hotmail.com;TechFarma2026!;Compras / Inventario
+2;g2_valentina;DÍAZ - VALENTINA;valendiaz01@yahoo.com;TechFarma2026!;Compras / Inventario
+2;g2_benjamin;ELIZALDE - BENJAMIN;belizalde@alu.frlp.utn.edu.ar;TechFarma2026!;Compras / Inventario
+2;g2_martin;ESPAMER - MARTIN;martinespamer@alu.frlp.utn.edu.ar;TechFarma2026!;Compras / Inventario
+3;g3_agustin;FERRARI - AGUSTIN NICOLAS;aferrari@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_gaston;FERRARIS DAVIES - GASTON;gferrarisdavies@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_stefania;FRANCINI - STEFANIA;stefaniafrancini@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_luciano;GARCIA MONTES - LUCIANO TOMAS;lugarciamontes@gmail.com;TechFarma2026!;Manufactura
+3;g3_mora;GENTIL - MORA;moragentil@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_sofia;GOSZKO - SOFIA LARA;slgoszko@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_agustin_g;GUTIERREZ MORA - AGUSTIN;agustingutierrezmora@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+3;g3_irineo;HIRIART - IRINEO;irineohiriart@alu.frlp.utn.edu.ar;TechFarma2026!;Manufactura
+4;g4_sofia;KALPIN - SOFIA ROXANA;sofikalpin@hotmail.com;TechFarma2026!;Contabilidad
+4;g4_valentino;LAURE - VALENTINO;vlaure@alu.frlp.utn.edu.ar;TechFarma2026!;Contabilidad
+4;g4_emanuel;LEIVA - EMANUEL NICOLAS;eleiva@alu.frlp.utn.edu.ar;TechFarma2026!;Contabilidad
+4;g4_carina;LOPEZ - CARINA BEATRIZ;carinablopez@gmail.com;TechFarma2026!;Contabilidad
+4;g4_joaquin;LUBERTO - JOAQUIN;joaquinluberto@alu.frlp.utn.edu.ar;TechFarma2026!;Contabilidad
+4;g4_baltazar;MOLTENI - BALTAZAR;baltazarmolteni@alu.frlp.utn.edu.ar;TechFarma2026!;Contabilidad
+4;g4_vicente;MOSCUZZA - VICENTE;vmoscuzza@alu.frlp.utn.edu.ar;TechFarma2026!;Contabilidad
+4;g4_gonzalo;PEREZ - GONZALO MARTIN;gnzaaspla@hotmail.com;TechFarma2026!;Contabilidad
+4;g4_franco;PETOSA AYALA - FRANCO;franco.petosa15@gmail.com;TechFarma2026!;Contabilidad
+5;g5_sofia;RAGGI - SOFIA BELEN;sraggi@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_matias;RAU BEKERMAN - MATIAS NAHUEL;mraubekerman@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_manuel;REBOL - MANUEL;manuelrebol@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_manuel_s;SCIANCA - MANUEL;mscianca@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_facundo;SERRA - FACUNDO;facuterremoto04@gmail.com;TechFarma2026!;RRHH / Proyectos
+5;g5_nicolas;VALDES - NICOLAS EZEQUIEL;nicolasezequielvaldes@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_ivan;VIJANDI - IVAN ANDRES;ivanandresvijandi@alu.frlp.utn.edu.ar;TechFarma2026!;RRHH / Proyectos
+5;g5_luciana;GANCIA - LUCIANA;lugancia@gmail.com;TechFarma2026!;RRHH / Proyectos
+5;g5_jaqueline;MONZON VALERIANO - JAQUELINE DEL PILAR;jaquemonzon31@gmail.com;TechFarma2026!;RRHH / Proyectos
