@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Acción de ventana ──────────────────────────── -->
+    <record id="action_attendance_simple" model="ir.actions.act_window">
+        <field name="name">Mi Asistencia</field>
+        <field name="res_model">attendance.simple</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registrá tu entrada y salida.
+            </p>
+            <p>
+                Hacé click en <b>Nuevo</b> para marcar tu entrada,
+                o seleccioná un registro activo para marcar la salida.
+            </p>
+        </field>
+    </record>
+
+    <!-- ── Acción para Marcar Entrada (check-in) ─────── -->
+    <record id="action_attendance_check_in" model="ir.actions.act_window">
+        <field name="name">Marcar Entrada</field>
+        <field name="res_model">attendance.simple</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_user_id': uid}</field>
+    </record>
+
+    <!-- ── Menú principal ────────────────────────────── -->
+    <menuitem id="menu_attendance_root"
+              name="Asistencia"
+              sequence="95"
+              web_icon="hr_attendance,static/description/icon.png"/>
+
+    <menuitem id="menu_attendance_my"
+              name="Mi Asistencia"
+              parent="menu_attendance_root"
+              action="action_attendance_simple"
+              sequence="10"/>
+
+    <!-- ── Menú en barra superior (solo el icono) ───── -->
+    <menuitem id="menu_attendance_top"
+              name="Asistencia"
+              sequence="95"
+              parent="menu_attendance_root"
+              action="action_attendance_simple"
+              groups="base.group_user"/>
+
+    <!-- ── Vista Tree (Lista) ────────────────────────── -->
+    <record id="view_attendance_simple_tree" model="ir.ui.view">
+        <field name="name">attendance.simple.list</field>
+        <field name="model">attendance.simple</field>
+        <field name="arch" type="xml">
+            <list decoration-success="is_active == True"
+                  decoration-muted="check_out != False">
+                <field name="user_id" optional="show"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="worked_hours" sum="Total"/>
+                <field name="is_active" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Vista Form (Detalle) ──────────────────────── -->
+    <record id="view_attendance_simple_form" model="ir.ui.view">
+        <field name="name">attendance.simple.form</field>
+        <field name="model">attendance.simple</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_check_out"
+                            type="object"
+                            string="Marcar Salida"
+                            class="btn-primary"
+                            invisible="check_out != False"/>
+                    <button name="action_reset"
+                            type="object"
+                            string="Reiniciar"
+                            confirm="¿Reiniciar el registro? Se va a resetear la hora de entrada."
+                            invisible="check_out != False"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group name="main" string="Registro">
+                            <field name="user_id"
+                                   options="{'no_create_edit': True}"/>
+                            <field name="check_in"
+                                   widget="datetime"/>
+                            <field name="check_out"
+                                   widget="datetime"/>
+                        </group>
+                        <group name="stats" string="Resumen">
+                            <field name="worked_hours" widget="float"/>
+                            <field name="is_active" widget="boolean"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="notes" string="Notas">
+                            <field name="notes" placeholder="Comentarios sobre la jornada..."/>
+                        </page>
+                        <page name="chatter" string="Historial">
+                            <field name="message_ids" widget="mail_thread"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vista Search ──────────────────────────────── -->
+    <record id="view_attendance_simple_search" model="ir.ui.view">
+        <field name="name">attendance.simple.search</field>
+        <field name="model">attendance.simple</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="check_in"/>
+                <separator/>
+                <filter name="filter_active"
+                        string="Jornada Activa"
+                        domain="[('is_active', '=', True)]"/>
+                <filter name="filter_today"
+                        string="Hoy"
+                        domain="[('check_in', '>=', datetime.datetime.combine(datetime.date.today(), datetime.time.min))]"/>
+                <separator/>
+                <filter name="group_user"
+                        string="Usuario"
+                        context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+</odoo>

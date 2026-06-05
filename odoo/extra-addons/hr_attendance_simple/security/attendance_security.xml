@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Record Rule: cada usuario ve solo SUS registros -->
+    <record id="rule_attendance_simple_user" model="ir.rule">
+        <field name="name">Asistencia: solo mis registros</field>
+        <field name="model_id" ref="model_attendance_simple"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Los administradores ven todo (hereda de group_system) -->
+    <record id="rule_attendance_simple_admin" model="ir.rule">
+        <field name="name">Asistencia: admins ven todo</field>
+        <field name="model_id" ref="model_attendance_simple"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

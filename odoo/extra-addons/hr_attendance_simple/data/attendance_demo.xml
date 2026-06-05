@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Datos demo: registros de asistencia de ejemplo.
+        Solo visibles cuando se instala con demo=True.
+    -->
+    <record id="attendance_demo_001" model="attendance.simple">
+        <field name="user_id" ref="base.user_admin"/>
+        <field name="check_in" eval="(DateTime.now() - timedelta(days=1)).strftime('%Y-%m-%d 08:30:00')"/>
+        <field name="check_out" eval="(DateTime.now() - timedelta(days=1)).strftime('%Y-%m-%d 17:15:00')"/>
+        <field name="notes">Jornada completa de prueba. Revisión de sensores IoT.</field>
+    </record>
+</odoo>
