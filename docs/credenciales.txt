@@ -1,6 +1,18 @@
+
+  ADMINISTRADORES
+  ----------------------------------------------------------------------
+    leorocca                Leandro Rocca                          leorocca@frlp.utn.edu.ar
+    errodriguez             Emanuel Rodriguez                      errodriguez@frlp.utn.edu.ar
+
 ================================================================================
   CREDENCIALES WORKSHOP ODOO — TIGE 2026
   Facultad Regional La Plata — UTN
+
+  ADMINISTRADORES
+  ----------------------------------------------------------------------
+    leorocca                Leandro Rocca                          leorocca@frlp.utn.edu.ar
+    errodriguez             Emanuel Rodriguez                      errodriguez@frlp.utn.edu.ar
+
 ================================================================================
 
   URL:        http://192.168.0.26
@@ -69,6 +81,18 @@
     g5_luciana                LUCIANA GANCIA                           lugancia@gmail.com
     g5_jaqueline              JAQUELINE MONZON VALERIANO               jaquemonzon31@gmail.com
 
+
+  ADMINISTRADORES
+  ----------------------------------------------------------------------
+    leorocca                Leandro Rocca                          leorocca@frlp.utn.edu.ar
+    errodriguez             Emanuel Rodriguez                      errodriguez@frlp.utn.edu.ar
+
 ================================================================================
   Password para TODOS los usuarios: TechFarma2026!
+
+  ADMINISTRADORES
+  ----------------------------------------------------------------------
+    leorocca                Leandro Rocca                          leorocca@frlp.utn.edu.ar
+    errodriguez             Emanuel Rodriguez                      errodriguez@frlp.utn.edu.ar
+
 ================================================================================
