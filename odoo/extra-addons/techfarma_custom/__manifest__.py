@@ -24,9 +24,11 @@
         'sale_management',
     ],
     'data': [
-        'security/ir.model.access.csv',
         'security/security.xml',
+        'security/ir.model.access.xml',
         'views/sensor_views.xml',
+    ],
+    'demo': [
         'data/sensor_demo_data.xml',
     ],
     'installable': True,

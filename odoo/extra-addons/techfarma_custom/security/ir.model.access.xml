@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Access rights para grupo Usuario Sensores IoT (lectura+escritura+crear, sin borrar) -->
+    <record id="access_techfarma_sensor_user" model="ir.model.access">
+        <field name="name">techfarma.sensor.user</field>
+        <field name="model_id" ref="model_techfarma_sensor"/>
+        <field name="group_id" ref="group_techfarma_sensor_user"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Access rights para grupo Manager Sensores IoT (todos los permisos) -->
+    <record id="access_techfarma_sensor_manager" model="ir.model.access">
+        <field name="name">techfarma.sensor.manager</field>
+        <field name="model_id" ref="model_techfarma_sensor"/>
+        <field name="group_id" ref="group_techfarma_sensor_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>

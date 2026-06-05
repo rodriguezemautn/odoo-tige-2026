@@ -27,7 +27,7 @@ class IoTSensor(models.Model):
     product_id = fields.Many2one(
         'product.product',
         string='Producto',
-        domain=[('type', '=', 'product')],
+        domain=[('type', '=', 'consu')],
         help='Producto asociado al sensor',
     )
     partner_id = fields.Many2one(

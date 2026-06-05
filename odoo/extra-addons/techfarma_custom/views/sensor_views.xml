@@ -4,7 +4,7 @@
     <record id="action_techfarma_sensor" model="ir.actions.act_window">
         <field name="name">Sensores IoT</field>
         <field name="res_model">techfarma.sensor</field>
-        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Gestioná los sensores IoT instalados en campo.
@@ -20,7 +20,7 @@
     <menuitem id="menu_techfarma_root"
               name="TechFarma"
               sequence="90"
-              web_icon="techfarma_custom,static/description/icon.png"/>
+              web_icon="/sale/static/description/sale.png"/>
 
     <menuitem id="menu_techfarma_sensors"
               name="Sensores IoT"
@@ -28,12 +28,12 @@
               action="action_techfarma_sensor"
               sequence="10"/>
 
-    <!-- ── Vista Tree (Lista) ─────────────────────────── -->
+    <!-- ── Vista Lista ─────────────────────────── -->
     <record id="view_techfarma_sensor_tree" model="ir.ui.view">
-        <field name="name">techfarma.sensor.tree</field>
+        <field name="name">techfarma.sensor.list</field>
         <field name="model">techfarma.sensor</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="is_overdue == True"
+            <list decoration-danger="is_overdue == True"
                   decoration-success="state == 'active'"
                   decoration-muted="state == 'retired'">
                 <field name="name" string="N° Serie"/>
@@ -43,7 +43,7 @@
                 <field name="installation_date" optional="hide"/>
                 <field name="days_active" optional="hide"/>
                 <field name="is_overdue" invisible="1"/>
-            </tree>
+            </list>
         </field>
     </record>
 
@@ -99,16 +99,16 @@
                             type="object"
                             string="Activar"
                             class="btn-primary"
-                            states="draft"/>
+                            invisible="state != 'draft'"/>
                     <button name="action_send_to_maintenance"
                             type="object"
                             string="Enviar a Mantenimiento"
-                            states="active"/>
+                            invisible="state != 'active'"/>
                     <button name="action_retire"
                             type="object"
                             string="Retirar"
                             confirm="¿Estás seguro de retirar este sensor?"
-                            states="active,maintenance"/>
+                            invisible="state not in ('active', 'maintenance')"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -197,17 +197,15 @@
                         string="Mantenimiento Vencido"
                         domain="[('is_overdue', '=', True)]"/>
                 <separator/>
-                <group expand="0" string="Agrupar por">
-                    <filter name="group_state"
-                            string="Estado"
-                            context="{'group_by': 'state'}"/>
-                    <filter name="group_product"
-                            string="Producto"
-                            context="{'group_by': 'product_id'}"/>
-                    <filter name="group_partner"
-                            string="Cliente"
-                            context="{'group_by': 'partner_id'}"/>
-                </group>
+                <filter name="group_state"
+                        string="Estado"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_product"
+                        string="Producto"
+                        context="{'group_by': 'product_id'}"/>
+                <filter name="group_partner"
+                        string="Cliente"
+                        context="{'group_by': 'partner_id'}"/>
             </search>
         </field>
     </record>

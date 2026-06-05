@@ -1,32 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!--
-        Categoría para agrupar los permisos del módulo.
-        Se muestra en Configuración → Técnico → Grupos de Usuarios.
-    -->
-    <record id="module_category_techfarma" model="ir.module.category">
-        <field name="name">TechFarma</field>
-        <field name="description">Módulo personalizado TechFarma S.A.</field>
-        <field name="sequence">20</field>
-    </record>
-
-    <!--
         Grupo base: acceso al modelo techfarma.sensor.
         Los usuarios asignados a este grupo pueden ver sensores.
     -->
     <record id="group_techfarma_sensor_user" model="res.groups">
         <field name="name">Usuario Sensores IoT</field>
-        <field name="category_id" ref="module_category_techfarma"/>
         <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
     <!--
         Grupo manager: acceso completo (crear, editar, borrar).
-        Hereda del grupo usuario.
+        Hereda del grupo usuario de sensores.
     -->
     <record id="group_techfarma_sensor_manager" model="res.groups">
         <field name="name">Manager Sensores IoT</field>
-        <field name="category_id" ref="module_category_techfarma"/>
         <field name="implied_ids" eval="[(4, ref('group_techfarma_sensor_user'))]"/>
     </record>
 </odoo>
