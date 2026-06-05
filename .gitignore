@@ -1,3 +1,9 @@
+# ── Datos sensibles / personales ────────────────────
+docs/*.xlsx
+docs/*.xls
+docs/credenciales.csv
+docs/credenciales.txt
+
 # ── Entorno ──────────────────────────────────────────
 .env
 *.local
