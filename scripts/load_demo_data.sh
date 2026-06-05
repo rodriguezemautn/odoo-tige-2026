@@ -95,14 +95,14 @@ print(f"   ✅ Servicios ID: {cat_sv}")
 # ── Crear productos ─────────────────────────────────────
 print("\n🔧 Creando productos de TechFarma...")
 productos = [
-    # Hardware
-    {'name': 'Sensor IoT Suelo Pro', 'type': 'product', 'list_price': 299.99, 'standard_price': 120.00, 'categ_id': cat_hw},
-    {'name': 'Sensor IoT Suelo Basic', 'type': 'product', 'list_price': 149.99, 'standard_price': 60.00, 'categ_id': cat_hw},
-    {'name': 'Estación Meteorológica Compacta', 'type': 'product', 'list_price': 599.99, 'standard_price': 250.00, 'categ_id': cat_hw},
-    {'name': 'Gateway LoRa 4G', 'type': 'product', 'list_price': 449.99, 'standard_price': 180.00, 'categ_id': cat_hw},
-    {'name': 'Kit Sensor IoT Completo', 'type': 'product', 'list_price': 899.99, 'standard_price': 380.00, 'categ_id': cat_hw},
-    {'name': 'Microcontrolador ESP32', 'type': 'product', 'list_price': 12.00, 'standard_price': 5.00, 'categ_id': cat_hw},
-    {'name': 'Carcasa Plástica ABS', 'type': 'product', 'list_price': 8.00, 'standard_price': 3.00, 'categ_id': cat_hw},
+    # Hardware — Odoo 19 ya no usa 'product', ahora es 'consu' (Goods)
+    {'name': 'Sensor IoT Suelo Pro', 'type': 'consu', 'list_price': 299.99, 'standard_price': 120.00, 'categ_id': cat_hw},
+    {'name': 'Sensor IoT Suelo Basic', 'type': 'consu', 'list_price': 149.99, 'standard_price': 60.00, 'categ_id': cat_hw},
+    {'name': 'Estación Meteorológica Compacta', 'type': 'consu', 'list_price': 599.99, 'standard_price': 250.00, 'categ_id': cat_hw},
+    {'name': 'Gateway LoRa 4G', 'type': 'consu', 'list_price': 449.99, 'standard_price': 180.00, 'categ_id': cat_hw},
+    {'name': 'Kit Sensor IoT Completo', 'type': 'consu', 'list_price': 899.99, 'standard_price': 380.00, 'categ_id': cat_hw},
+    {'name': 'Microcontrolador ESP32', 'type': 'consu', 'list_price': 12.00, 'standard_price': 5.00, 'categ_id': cat_hw},
+    {'name': 'Carcasa Plástica ABS', 'type': 'consu', 'list_price': 8.00, 'standard_price': 3.00, 'categ_id': cat_hw},
     # Software
     {'name': 'TechFarma Cloud — Licencia Anual', 'type': 'service', 'list_price': 1200.00, 'standard_price': 0, 'categ_id': cat_sw},
     {'name': 'TechFarma Cloud — Licencia Mensual', 'type': 'service', 'list_price': 120.00, 'standard_price': 0, 'categ_id': cat_sw},

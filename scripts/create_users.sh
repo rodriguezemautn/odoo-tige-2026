@@ -1,10 +1,7 @@
 #!/bin/bash
 # ============================================================
-# Crear 40 usuarios para el workshop, distribuidos en 5 grupos
-# con grupos de Odoo asignados correctamente vía XML-RPC
-#
-# CORRECCIÓN: los grupos se buscan por XML ID (ir.model.data)
-# y se asignan con la sintaxis correcta de Odoo (comando (4, id))
+# Crear usuarios del workshop desde lista de alumnos TIGE 2026
+# Generado automáticamente desde docs/TIGE 2026_lista de alumnos.xlsx
 # ============================================================
 
 set -euo pipefail
@@ -15,7 +12,8 @@ ADMIN_USER="admin"
 ADMIN_PWD="admin"
 
 echo "════════════════════════════════════════════"
-echo "  Creando 40 usuarios para Workshop Odoo"
+echo "  Creando usuarios para Workshop Odoo"
+echo "  Total: 42 estudiantes en 5 grupos"
 echo "════════════════════════════════════════════"
 
 # Esperar a que Odoo esté disponible
@@ -29,11 +27,11 @@ for i in $(seq 1 24); do
     sleep 5
 done
 
-# ── Crear usuarios vía XML-RPC ──────────────────────────
 python3 << 'PYEOF'
 import xmlrpc.client
 import sys
 import time
+import re
 
 ODOO_URL = "http://localhost:8069"
 DB_NAME = "odoo_workshop"
@@ -51,10 +49,8 @@ print(f"✅ Conectado como admin (UID: {uid})")
 models = xmlrpc.client.ServerProxy(f'{ODOO_URL}/xmlrpc/2/object')
 
 def get_group_id(xml_id):
-    """Busca un grupo de Odoo por su XML ID completo (ej: 'sales_team.group_sale_salesman')"""
     parts = xml_id.split('.')
     if len(parts) != 2:
-        print(f"  ⚠️ XML ID inválido: {xml_id}")
         return None
     module, name = parts
     result = models.execute_kw(DB_NAME, uid, ADMIN_PWD, 'ir.model.data', 'search_read',
@@ -62,17 +58,14 @@ def get_group_id(xml_id):
         {'fields': ['res_id'], 'limit': 1})
     if result:
         return result[0]['res_id']
-    # Fallback: buscar por name en res.groups
     fallback = models.execute_kw(DB_NAME, uid, ADMIN_PWD, 'res.groups', 'search_read',
         [[['name', 'ilike', name.replace('group_', '').replace('_', ' ')]]],
         {'fields': ['id'], 'limit': 1})
     if fallback:
         return fallback[0]['id']
-    print(f"  ⚠️ Grupo no encontrado: {xml_id}")
+    print(f"  \u26a0\ufe0f Grupo no encontrado: {xml_id}")
     return None
 
-# IDs de grupos Odoo (XML IDs de Odoo 19 Community)
-# Buscar una vez y cachear
 GROUP_CACHE = {}
 
 def get_group(xml_id):
@@ -80,148 +73,199 @@ def get_group(xml_id):
         GROUP_CACHE[xml_id] = get_group_id(xml_id)
     return GROUP_CACHE[xml_id]
 
-# ── Función para crear usuario ──────────────────────────
-def crear_usuario(name, login, password, group_xml_ids):
-    """Crea un usuario en Odoo y le asigna grupos."""
-    
-    # Verificar si ya existe
+def generar_login(grupo, nombre_completo, usados):
+    partes = nombre_completo.split(',', 1)
+    apellido = partes[0].strip()
+    nombre = partes[1].strip() if len(partes) > 1 else ""
+    primer_nombre = nombre.split()[0] if nombre else ""
+    base = f"g{grupo}_{primer_nombre.lower()}"
+    base = re.sub(r'[^a-z0-9_]', '', base)
+    if base not in usados:
+        usados.add(base)
+        return base
+    base2 = f"{base}_{apellido[0].lower()}"
+    base2 = re.sub(r'[^a-z0-9_]', '', base2)
+    if base2 not in usados:
+        usados.add(base2)
+        return base2
+    base3 = f"g{grupo}_{primer_nombre.lower()}_{apellido.lower()}"
+    base3 = re.sub(r'[^a-z0-9_]', '', base3)[:60]
+    usados.add(base3)
+    return base3
+
+def crear_usuario(name, login, password, email, group_xml_ids):
     existing = models.execute_kw(DB_NAME, uid, ADMIN_PWD, 'res.users', 'search',
         [[['login', '=', login]]])
     if existing:
-        print(f"  ⏭️  Usuario ya existe: {login} (ID: {existing[0]})")
+        print(f"  \u23ed\ufe0f Ya existe: {login} ({name})")
         return existing[0]
-    
-    # Obtener IDs de grupos
     group_ids = []
     for xml_id in group_xml_ids:
         gid = get_group(xml_id)
         if gid:
             group_ids.append(gid)
-    
     if not group_ids:
-        # Asignar al menos el grupo base (Employee / Internal User)
         base_group = get_group('base.group_user')
         if base_group:
             group_ids = [base_group]
-    
-    # Crear usuario
     try:
         user_id = models.execute_kw(DB_NAME, uid, ADMIN_PWD, 'res.users', 'create', [{
             'name': name,
             'login': login,
             'password': password,
-            'email': f'{login}@techfarma.local',
-            'lang': 'es_AR',
+            'email': email,
+            'lang': 'en_US',
             'tz': 'America/Argentina/Buenos_Aires',
             'notification_type': 'email',
-            'groups_id': [(4, gid) for gid in group_ids],
+            'group_ids': [(4, gid) for gid in group_ids],
         }])
-        print(f"  ✅ {login} → {name} (ID: {user_id})")
-        time.sleep(0.2)  # Pausa para no saturar XML-RPC
+        print(f"  \u2705 {login} \u2192 {name}")
+        time.sleep(0.2)
         return user_id
     except Exception as e:
-        print(f"  ❌ Error creando {login}: {e}")
+        print(f"  \u274c Error creando {login}: {e}")
         return None
 
-# ── Datos de usuarios ────────────────────────────────────
-# Cada grupo tiene su módulo principal + módulo base
-print("\n──────────────────────────────────────")
+PASSWORD = "TechFarma2026!"
+
+# Datos de estudiantes
+
+print("\n──────────────────────────────────────────────")
 print("Grupo 1 — Ventas & CRM")
-print("──────────────────────────────────────")
-g1_groups = ['sales_team.group_sale_salesman', 'base.group_user']
+print("──────────────────────────────────────────────")
+GROUP1_GROUPS = ["sales_team.group_sale_salesman", "base.group_user"]
+crear_usuario("BACCARINI, CAMILA", "g1_camila", PASSWORD, "cambaccarini01@gmail.com", GROUP1_GROUPS)
+crear_usuario("BATTISTELLA, TOMAS", "g1_tomas", PASSWORD, "tbattistella@alu.frlp.utn.edu.ar", GROUP1_GROUPS)
+crear_usuario("BELLINGERI, DANIELA SOL", "g1_daniela", PASSWORD, "andromeda0209@gmail.com", GROUP1_GROUPS)
+crear_usuario("BORDA, ALESANDRO PATRICIO", "g1_alesandro", PASSWORD, "patricio.borda@outlook.com", GROUP1_GROUPS)
+crear_usuario("BRESCIANI, ISABELLA", "g1_isabella", PASSWORD, "brescianisa@gmail.com", GROUP1_GROUPS)
+crear_usuario("BUIATTI, PEDRO NAZARENO", "g1_pedro", PASSWORD, "buiattip58@gmail.com", GROUP1_GROUPS)
+crear_usuario("CAPRA, VALENTINA", "g1_valentina", PASSWORD, "valentinacapra@alu.frlp.utn.edu.ar", GROUP1_GROUPS)
+crear_usuario("CAPRE, RODRIGO JOAQUIN", "g1_rodrigo", PASSWORD, "rjcapre@alu.frlp.utn.edu.ar", GROUP1_GROUPS)
 
-crear_usuario("Ana Vendedora", "g1_ana", "TechFarma2026!", g1_groups)
-crear_usuario("Bruno Comercial", "g1_bruno", "TechFarma2026!", g1_groups)
-crear_usuario("Carla Preventa", "g1_carla", "TechFarma2026!", g1_groups)
-crear_usuario("Diego Analista", "g1_diego", "TechFarma2026!", g1_groups)
-crear_usuario("Elena Soporte", "g1_elena", "TechFarma2026!", g1_groups)
-crear_usuario("Franco Ventas", "g1_franco", "TechFarma2026!", g1_groups)
-crear_usuario("Gabriela CRM", "g1_gabriela", "TechFarma2026!", g1_groups)
-crear_usuario("Hernán Manager", "g1_hernan", "TechFarma2026!", g1_groups)
-
-print("\n──────────────────────────────────────")
+print("\n──────────────────────────────────────────────")
 print("Grupo 2 — Supply Chain")
-print("──────────────────────────────────────")
-g2_groups = ['purchase.group_purchase_user', 'stock.group_stock_user', 'base.group_user']
+print("──────────────────────────────────────────────")
+GROUP2_GROUPS = ["purchase.group_purchase_user", "stock.group_stock_user", "base.group_user"]
+crear_usuario("CAPUTO, JOAQUIN", "g2_joaquin", PASSWORD, "joaquincaputo84@gmail.com", GROUP2_GROUPS)
+crear_usuario("CARDOSO, CAROLINA MICAELA", "g2_carolina", PASSWORD, "carolinamicaelacardoso@alu.frlp.utn.edu.ar", GROUP2_GROUPS)
+crear_usuario("CASTRO GONZALES, BRAIAN GERMAN", "g2_braian", PASSWORD, "bcastrogonzales@alu.frlp.utn.edu.ar", GROUP2_GROUPS)
+crear_usuario("CHECA, AUGUSTO", "g2_augusto", PASSWORD, "augustocheca@alu.frlp.utn.edu.ar", GROUP2_GROUPS)
+crear_usuario("COCH, TOMAS AXEL", "g2_tomas", PASSWORD, "tomascoch@hotmail.com", GROUP2_GROUPS)
+crear_usuario("D\u00cdAZ, VALENTINA", "g2_valentina", PASSWORD, "valendiaz01@yahoo.com", GROUP2_GROUPS)
+crear_usuario("ELIZALDE, BENJAMIN", "g2_benjamin", PASSWORD, "belizalde@alu.frlp.utn.edu.ar", GROUP2_GROUPS)
+crear_usuario("ESPAMER, MARTIN", "g2_martin", PASSWORD, "martinespamer@alu.frlp.utn.edu.ar", GROUP2_GROUPS)
 
-crear_usuario("Ignacio Compras", "g2_ignacio", "TechFarma2026!", g2_groups)
-crear_usuario("Julia Logística", "g2_julia", "TechFarma2026!", g2_groups)
-crear_usuario("Kevin Almacén", "g2_kevin", "TechFarma2026!", g2_groups)
-crear_usuario("Laura Inventario", "g2_laura", "TechFarma2026!", g2_groups)
-crear_usuario("Mateo Supply", "g2_mateo", "TechFarma2026!", g2_groups)
-crear_usuario("Natalia SC", "g2_natalia", "TechFarma2026!", g2_groups)
-crear_usuario("Oscar Bodega", "g2_oscar", "TechFarma2026!", g2_groups)
-crear_usuario("Paula Analista", "g2_paula", "TechFarma2026!", g2_groups)
-
-print("\n──────────────────────────────────────")
+print("\n──────────────────────────────────────────────")
 print("Grupo 3 — Manufactura")
-print("──────────────────────────────────────")
-g3_groups = ['mrp.group_mrp_user', 'stock.group_stock_user', 'base.group_user']
+print("──────────────────────────────────────────────")
+GROUP3_GROUPS = ["mrp.group_mrp_user", "stock.group_stock_user", "base.group_user"]
+crear_usuario("FERRARI, AGUSTIN NICOLAS", "g3_agustin", PASSWORD, "aferrari@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("FERRARIS DAVIES, GASTON", "g3_gaston", PASSWORD, "gferrarisdavies@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("FRANCINI, STEFANIA", "g3_stefania", PASSWORD, "stefaniafrancini@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("GARCIA MONTES, LUCIANO TOMAS", "g3_luciano", PASSWORD, "lugarciamontes@gmail.com", GROUP3_GROUPS)
+crear_usuario("GENTIL, MORA", "g3_mora", PASSWORD, "moragentil@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("GOSZKO, SOFIA LARA", "g3_sofia", PASSWORD, "slgoszko@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("GUTIERREZ MORA, AGUSTIN", "g3_agustin_g", PASSWORD, "agustingutierrezmora@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
+crear_usuario("HIRIART, IRINEO", "g3_irineo", PASSWORD, "irineohiriart@alu.frlp.utn.edu.ar", GROUP3_GROUPS)
 
-crear_usuario("Quentin Planta", "g3_quentin", "TechFarma2026!", g3_groups)
-crear_usuario("Rosa Calidad", "g3_rosa", "TechFarma2026!", g3_groups)
-crear_usuario("Santiago Prod", "g3_santiago", "TechFarma2026!", g3_groups)
-crear_usuario("Teresa Operaria", "g3_teresa", "TechFarma2026!", g3_groups)
-crear_usuario("Ulises QA", "g3_ulises", "TechFarma2026!", g3_groups)
-crear_usuario("Valeria Planif", "g3_valeria", "TechFarma2026!", g3_groups)
-crear_usuario("Walter Ensamble", "g3_walter", "TechFarma2026!", g3_groups)
-crear_usuario("Ximena Manufact", "g3_ximena", "TechFarma2026!", g3_groups)
-
-print("\n──────────────────────────────────────")
+print("\n──────────────────────────────────────────────")
 print("Grupo 4 — Contabilidad")
-print("──────────────────────────────────────")
-g4_groups = ['account.group_account_user', 'base.group_user']
+print("──────────────────────────────────────────────")
+GROUP4_GROUPS = ["account.group_account_user", "base.group_user"]
+crear_usuario("KALPIN, SOFIA ROXANA", "g4_sofia", PASSWORD, "sofikalpin@hotmail.com", GROUP4_GROUPS)
+crear_usuario("LAURE, VALENTINO", "g4_valentino", PASSWORD, "vlaure@alu.frlp.utn.edu.ar", GROUP4_GROUPS)
+crear_usuario("LEIVA, EMANUEL NICOLAS", "g4_emanuel", PASSWORD, "eleiva@alu.frlp.utn.edu.ar", GROUP4_GROUPS)
+crear_usuario("LOPEZ, CARINA BEATRIZ", "g4_carina", PASSWORD, "carinablopez@gmail.com", GROUP4_GROUPS)
+crear_usuario("LUBERTO, JOAQUIN", "g4_joaquin", PASSWORD, "joaquinluberto@alu.frlp.utn.edu.ar", GROUP4_GROUPS)
+crear_usuario("MOLTENI, BALTAZAR", "g4_baltazar", PASSWORD, "baltazarmolteni@alu.frlp.utn.edu.ar", GROUP4_GROUPS)
+crear_usuario("MOSCUZZA, VICENTE", "g4_vicente", PASSWORD, "vmoscuzza@alu.frlp.utn.edu.ar", GROUP4_GROUPS)
+crear_usuario("PEREZ, GONZALO MARTIN", "g4_gonzalo", PASSWORD, "gnzaaspla@hotmail.com", GROUP4_GROUPS)
+crear_usuario("PETOSA AYALA, FRANCO", "g4_franco", PASSWORD, "franco.petosa15@gmail.com", GROUP4_GROUPS)
 
-crear_usuario("Yanina Contadora", "g4_yanina", "TechFarma2026!", g4_groups)
-crear_usuario("Zoe Finanzas", "g4_zoe", "TechFarma2026!", g4_groups)
-crear_usuario("Ariel Facturac", "g4_ariel", "TechFarma2026!", g4_groups)
-crear_usuario("Beatriz Tesorer", "g4_beatriz", "TechFarma2026!", g4_groups)
-crear_usuario("Claudio Auditor", "g4_claudio", "TechFarma2026!", g4_groups)
-crear_usuario("Daniela Ctable", "g4_daniela", "TechFarma2026!", g4_groups)
-crear_usuario("Esteban Pagos", "g4_esteban", "TechFarma2026!", g4_groups)
-crear_usuario("Florencia CFO", "g4_florencia", "TechFarma2026!", g4_groups)
-
-print("\n──────────────────────────────────────")
+print("\n──────────────────────────────────────────────")
 print("Grupo 5 — RRHH & TI")
-print("──────────────────────────────────────")
-# RRHH usa hr.group_hr_user, Proyecto usa project.group_project_user
-g5_hr_groups = ['hr.group_hr_user', 'base.group_user']
-g5_project_groups = ['project.group_project_user', 'base.group_user']
-g5_it_groups = ['base.group_user']  # IT solo tiene usuario base + acceso técnico
+print("──────────────────────────────────────────────")
+GROUP5_GROUPS = ["hr.group_hr_user", "project.group_project_user", "base.group_user"]
+crear_usuario("RAGGI, SOFIA BELEN", "g5_sofia", PASSWORD, "sraggi@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("RAU BEKERMAN, MATIAS NAHUEL", "g5_matias", PASSWORD, "mraubekerman@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("REBOL, MANUEL", "g5_manuel", PASSWORD, "manuelrebol@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("SCIANCA, MANUEL", "g5_manuel_s", PASSWORD, "mscianca@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("SERRA, FACUNDO", "g5_facundo", PASSWORD, "facuterremoto04@gmail.com", GROUP5_GROUPS)
+crear_usuario("VALDES, NICOLAS EZEQUIEL", "g5_nicolas", PASSWORD, "nicolasezequielvaldes@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("VIJANDI, IVAN ANDRES", "g5_ivan", PASSWORD, "ivanandresvijandi@alu.frlp.utn.edu.ar", GROUP5_GROUPS)
+crear_usuario("GANCIA, LUCIANA", "g5_luciana", PASSWORD, "lugancia@gmail.com", GROUP5_GROUPS)
+crear_usuario("MONZON VALERIANO, JAQUELINE DEL PILAR", "g5_jaqueline", PASSWORD, "jaquemonzon31@gmail.com", GROUP5_GROUPS)
 
-crear_usuario("Gonzalo RRHH", "g5_gonzalo", "TechFarma2026!", g5_hr_groups)
-crear_usuario("Helena PM", "g5_helena", "TechFarma2026!", g5_project_groups)
-crear_usuario("Iván DevOps", "g5_ivan", "TechFarma2026!", g5_it_groups)
-crear_usuario("Juana SysAdmin", "g5_juana", "TechFarma2026!", g5_it_groups)
-crear_usuario("Karina TI", "g5_karina", "TechFarma2026!", g5_it_groups)
-crear_usuario("Luis HR Manager", "g5_luis", "TechFarma2026!", g5_hr_groups)
-crear_usuario("María Recruit", "g5_maria", "TechFarma2026!", g5_hr_groups)
-crear_usuario("Nicolás Proyect", "g5_nicolas", "TechFarma2026!", g5_project_groups)
-
-print("\n════════════════════════════════════════════")
-print("  ✅ 40 usuarios creados/verificados")
-print("════════════════════════════════════════════")
-print("")
+print("\n" + "=" * 50)
+print("  ✅ 42 usuarios creados/verificados")
+print("=" * 50)
+print()
 print("  Credenciales para los estudiantes:")
-print("  ─────────────────────────────────────")
+print("  " + "-" * 41)
 print("  URL:        http://<IP_DEL_SERVIDOR>")
 print("  Contraseña: TechFarma2026!")
-print("  Login:      g{grupo}_{nombre}")
-print("")
-print("  Ejemplos:")
-print("    g1_ana     → Grupo 1 - Ventas")
-print("    g2_kevin   → Grupo 2 - Supply Chain")
-print("    g3_santiago → Grupo 3 - Manufactura")
-print("    g4_yanina  → Grupo 4 - Contabilidad")
-print("    g5_gonzalo → Grupo 5 - RRHH & TI")
-print("════════════════════════════════════════════")
+print()
+print("  Grupo 1 — Ventas & CRM:")
+print("    g1_camila                 → CAMILA BACCARINI")
+print("    g1_tomas                  → TOMAS BATTISTELLA")
+print("    g1_daniela                → DANIELA BELLINGERI")
+print("    g1_alesandro              → ALESANDRO BORDA")
+print("    g1_isabella               → ISABELLA BRESCIANI")
+print("    g1_pedro                  → PEDRO BUIATTI")
+print("    g1_valentina              → VALENTINA CAPRA")
+print("    g1_rodrigo                → RODRIGO CAPRE")
+print()
+print("  Grupo 2 — Supply Chain:")
+print("    g2_joaquin                → JOAQUIN CAPUTO")
+print("    g2_carolina               → CAROLINA CARDOSO")
+print("    g2_braian                 → BRAIAN CASTRO GONZALES")
+print("    g2_augusto                → AUGUSTO CHECA")
+print("    g2_tomas                  → TOMAS COCH")
+print("    g2_valentina              → VALENTINA DÍAZ")
+print("    g2_benjamin               → BENJAMIN ELIZALDE")
+print("    g2_martin                 → MARTIN ESPAMER")
+print()
+print("  Grupo 3 — Manufactura:")
+print("    g3_agustin                → AGUSTIN FERRARI")
+print("    g3_gaston                 → GASTON FERRARIS DAVIES")
+print("    g3_stefania               → STEFANIA FRANCINI")
+print("    g3_luciano                → LUCIANO GARCIA MONTES")
+print("    g3_mora                   → MORA GENTIL")
+print("    g3_sofia                  → SOFIA GOSZKO")
+print("    g3_agustin_g              → AGUSTIN GUTIERREZ MORA")
+print("    g3_irineo                 → IRINEO HIRIART")
+print()
+print("  Grupo 4 — Contabilidad:")
+print("    g4_sofia                  → SOFIA KALPIN")
+print("    g4_valentino              → VALENTINO LAURE")
+print("    g4_emanuel                → EMANUEL LEIVA")
+print("    g4_carina                 → CARINA LOPEZ")
+print("    g4_joaquin                → JOAQUIN LUBERTO")
+print("    g4_baltazar               → BALTAZAR MOLTENI")
+print("    g4_vicente                → VICENTE MOSCUZZA")
+print("    g4_gonzalo                → GONZALO PEREZ")
+print("    g4_franco                 → FRANCO PETOSA AYALA")
+print()
+print("  Grupo 5 — RRHH & TI:")
+print("    g5_sofia                  → SOFIA RAGGI")
+print("    g5_matias                 → MATIAS RAU BEKERMAN")
+print("    g5_manuel                 → MANUEL REBOL")
+print("    g5_manuel_s               → MANUEL SCIANCA")
+print("    g5_facundo                → FACUNDO SERRA")
+print("    g5_nicolas                → NICOLAS VALDES")
+print("    g5_ivan                   → IVAN VIJANDI")
+print("    g5_luciana                → LUCIANA GANCIA")
+print("    g5_jaqueline              → JAQUELINE MONZON VALERIANO")
+print()
 
-# Mostrar resumen de grupos cargados
-print("\n📋 Grupos cargados en caché:")
+print()
+print("  Grupos cargados en cache:")
 for xml_id, gid in GROUP_CACHE.items():
     if gid:
-        print(f"   ✅ {xml_id} → ID: {gid}")
+        print(f"    -> {xml_id} = ID: {gid}")
     else:
-        print(f"   ❌ {xml_id} → NO ENCONTRADO")
+        print(f"    -> {xml_id} = NO ENCONTRADO")
+print()
 
 PYEOF
