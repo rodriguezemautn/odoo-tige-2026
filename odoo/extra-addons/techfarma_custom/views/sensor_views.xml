@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Acción de ventana ──────────────────────────── -->
+    <record id="action_techfarma_sensor" model="ir.actions.act_window">
+        <field name="name">Sensores IoT</field>
+        <field name="res_model">techfarma.sensor</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Gestioná los sensores IoT instalados en campo.
+            </p>
+            <p>
+                Cada sensor tiene un número de serie único, está asociado a un producto y a un cliente.
+                El sistema trackea el estado, los días activos y las fechas de mantenimiento.
+            </p>
+        </field>
+    </record>
+
+    <!-- ── Menú ───────────────────────────────────────── -->
+    <menuitem id="menu_techfarma_root"
+              name="TechFarma"
+              sequence="90"
+              web_icon="techfarma_custom,static/description/icon.png"/>
+
+    <menuitem id="menu_techfarma_sensors"
+              name="Sensores IoT"
+              parent="menu_techfarma_root"
+              action="action_techfarma_sensor"
+              sequence="10"/>
+
+    <!-- ── Vista Tree (Lista) ─────────────────────────── -->
+    <record id="view_techfarma_sensor_tree" model="ir.ui.view">
+        <field name="name">techfarma.sensor.tree</field>
+        <field name="model">techfarma.sensor</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="is_overdue == True"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'retired'">
+                <field name="name" string="N° Serie"/>
+                <field name="product_id" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="state" widget="badge"/>
+                <field name="installation_date" optional="hide"/>
+                <field name="days_active" optional="hide"/>
+                <field name="is_overdue" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ── Vista Kanban (Tarjetas) ────────────────────── -->
+    <record id="view_techfarma_sensor_kanban" model="ir.ui.view">
+        <field name="name">techfarma.sensor.kanban</field>
+        <field name="model">techfarma.sensor</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="state"/>
+                <field name="days_active"/>
+                <field name="is_overdue"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card" t-att-class="record.is_overdue.raw_value and 'oe_kanban_card-danger' or ''">
+                            <div class="o_kanban_card_top">
+                                <div class="o_kanban_card_header">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div class="o_kanban_card_header_right">
+                                    <field name="state" widget="badge"/>
+                                </div>
+                            </div>
+                            <div class="oe_kanban_content">
+                                <div t-if="record.product_id.raw_value">
+                                    Producto: <field name="product_id"/>
+                                </div>
+                                <div t-if="record.days_active.raw_value">
+                                    Días activo: <field name="days_active"/>
+                                </div>
+                                <div t-if="record.is_overdue.raw_value" class="text-danger">
+                                    ⚠️ Mantenimiento vencido
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ── Vista Form (Detalle) ────────────────────────── -->
+    <record id="view_techfarma_sensor_form" model="ir.ui.view">
+        <field name="name">techfarma.sensor.form</field>
+        <field name="model">techfarma.sensor</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,maintenance,retired"/>
+                    <button name="action_activate"
+                            type="object"
+                            string="Activar"
+                            class="btn-primary"
+                            states="draft"/>
+                    <button name="action_send_to_maintenance"
+                            type="object"
+                            string="Enviar a Mantenimiento"
+                            states="active"/>
+                    <button name="action_retire"
+                            type="object"
+                            string="Retirar"
+                            confirm="¿Estás seguro de retirar este sensor?"
+                            states="active,maintenance"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_partner"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-user"
+                                help="Ver cliente"
+                                context="{'form_view_self': False}">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Cliente</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="name" string="Número de Serie"/>
+                        <h1>
+                            <field name="name" placeholder="ej: TF-20240001"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group name="info" string="Información General">
+                            <field name="product_id"
+                                   options="{'no_create_edit': True}"/>
+                            <field name="partner_id"
+                                   options="{'no_create_edit': True}"/>
+                            <field name="installation_date"/>
+                            <field name="active"/>
+                        </group>
+                        <group name="status" string="Estado">
+                            <field name="days_active" widget="integer"/>
+                            <field name="is_overdue" widget="boolean"/>
+                        </group>
+                    </group>
+
+                    <group name="location" string="Ubicación">
+                        <group>
+                            <field name="location_lat"
+                                   placeholder="ej: -34.921"
+                                   widget="float"/>
+                            <field name="location_lon"
+                                   placeholder="ej: -57.955"
+                                   widget="float"/>
+                        </group>
+                        <group>
+                            <div class="o_map_container" style="height: 300px;">
+                                <field name="partner_id"
+                                       widget="partner_map"
+                                   options="{'partner_field': 'partner_id'}"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page name="notes" string="Notas Técnicas">
+                            <field name="notes" placeholder="Observaciones técnicas..."/>
+                        </page>
+                        <page name="chatter" string="Historial">
+                            <field name="message_ids" widget="mail_thread"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Vista Search (Búsqueda) ────────────────────── -->
+    <record id="view_techfarma_sensor_search" model="ir.ui.view">
+        <field name="name">techfarma.sensor.search</field>
+        <field name="model">techfarma.sensor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="N° Serie"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <separator/>
+                <filter name="filter_active"
+                        string="Activos"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_maintenance"
+                        string="En Mantenimiento"
+                        domain="[('state', '=', 'maintenance')]"/>
+                <filter name="filter_overdue"
+                        string="Mantenimiento Vencido"
+                        domain="[('is_overdue', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state"
+                            string="Estado"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_product"
+                            string="Producto"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="group_partner"
+                            string="Cliente"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Datos de demostración para TechFarma S.A.
+        Se cargan al instalar el módulo y sirven como ejemplo
+        para que los estudiantes exploren.
+    -->
+
+    <record id="sensor_demo_001" model="techfarma.sensor">
+        <field name="name">TF-20240001</field>
+        <field name="product_id" ref="product.product_product_4"/>
+        <field name="partner_id" ref="base.res_partner_2"/>
+        <field name="installation_date" eval="(DateTime.now() - timedelta(days=180)).strftime('%Y-%m-%d')"/>
+        <field name="state">active</field>
+        <field name="location_lat">-34.921</field>
+        <field name="location_lon">-57.955</field>
+        <field name="notes">Instalado en campo Experimental Lote A. 
+Firmware v2.1.3 - Configuración LoRaWAN canal 8.
+Próximo mantenimiento: revisar batería.</field>
+    </record>
+
+    <record id="sensor_demo_002" model="techfarma.sensor">
+        <field name="name">TF-20240002</field>
+        <field name="product_id" ref="product.product_product_4"/>
+        <field name="partner_id" ref="base.res_partner_2"/>
+        <field name="installation_date" eval="(DateTime.now() - timedelta(days=400)).strftime('%Y-%m-%d')"/>
+        <field name="state">active</field>
+        <field name="location_lat">-34.800</field>
+        <field name="location_lon">-58.000</field>
+        <field name="notes">Reportando lecturas correctas. Batería al 65%.</field>
+    </record>
+
+    <record id="sensor_demo_003" model="techfarma.sensor">
+        <field name="name">TF-20240003</field>
+        <field name="product_id" ref="product.product_product_5"/>
+        <field name="partner_id" ref="base.res_partner_3"/>
+        <field name="installation_date" eval="(DateTime.now() - timedelta(days=30)).strftime('%Y-%m-%d')"/>
+        <field name="state">active</field>
+        <field name="location_lat">-31.420</field>
+        <field name="location_lon">-64.188</field>
+        <field name="notes">Instalación reciente. Monitoreo de humedad y temperatura.
+Sensores calibrados en fábrica.</field>
+    </record>
+
+    <record id="sensor_demo_004" model="techfarma.sensor">
+        <field name="name">TF-20230004</field>
+        <field name="product_id" ref="product.product_product_5"/>
+        <field name="partner_id" ref="base.res_partner_4"/>
+        <field name="installation_date" eval="(DateTime.now() - timedelta(days=730)).strftime('%Y-%m-%d')"/>
+        <field name="state">maintenance</field>
+        <field name="notes">Sensor enviado a mantenimiento por bajo voltaje.
+Reemplazar batería y verificar sellado IP67.</field>
+    </record>
+
+    <record id="sensor_demo_005" model="techfarma.sensor">
+        <field name="name">TF-20220005</field>
+        <field name="product_id" ref="product.product_product_4"/>
+        <field name="partner_id" ref="base.res_partner_5"/>
+        <field name="installation_date" eval="(DateTime.now() - timedelta(days=900)).strftime('%Y-%m-%d')"/>
+        <field name="state">retired</field>
+        <field name="notes">Retirado por obsolescencia. Reemplazado por TF-20240001.
+Modelo anterior ya no tiene soporte de firmware.</field>
+    </record>
+</odoo>

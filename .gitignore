@@ -1,0 +1,32 @@
+# ── Entorno ──────────────────────────────────────────
+.env
+*.local
+
+# ── Docker / Volúmenes ──────────────────────────────
+backups/*.dump
+pgadmin/
+
+# ── Node / Marp ─────────────────────────────────────
+node_modules/
+package-lock.json
+package.json
+presentacion.html
+presentacion.pdf
+
+# ── Python ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# ── IDE ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
